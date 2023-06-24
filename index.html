@@ -29,7 +29,7 @@ function calculate() {
   var production = parseFloat(document.getElementById("num1").value);
   var printifyshipping = parseFloat(document.getElementById("num2").value);
   var printifyVAT = (production+shipping)*0.21;
-  var printifyresult = shipping + production + printifyVAT;
+  var printifyresult = printifyshipping + production + printifyVAT;
   
   var listingcost = 0.2; // one time
   var retailprice = parseFloat(document.getElementById("retailprice").value);
