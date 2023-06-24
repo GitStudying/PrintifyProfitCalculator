@@ -27,24 +27,28 @@
 <script>
 function calculate() {
   var production = parseFloat(document.getElementById("num1").value);
-  var shipping = parseFloat(document.getElementById("num2").value);
+  var printifyshipping = parseFloat(document.getElementById("num2").value);
   var printifyVAT = (production+shipping)*0.21;
   var printifyresult = shipping + production + printifyVAT;
   
   var listingcost = 0.2; // one time
   var retailprice = parseFloat(document.getElementById("retailprice").value);
+  
   var processcost = 0.04*retailprice+0.35;
   var transcost = 0.065*retailprice;
-  var EtsyVAT = 0.01*retailprice+0.01*shipping+processcost*0.21;
+  var EtsyVAT = 0.01*retailprice+0.01*printifyshipping+processcost*0.21;
   var etsyresult = processcost+transcost+EtsyVAT; 
   var totalcost = printifyresult + etsyresult;
-  
+
+  var noprofit = (printifyresult + 0.35 * 1.21 - 0.01 * printifyshipping) / (1 + 0.065 + 0.01 + 0.04 * 1.21);
   var profit = retailprice - totalcost; // 1.43 eur
   
-  document.getElementById("printifyresult").innerHTML = "The total printify price is: " + printifyresult.toFixed(2);
-  document.getElementById("etsyresult").innerHTML = "The etsy price is: " + etsyresult.toFixed(2);
+  document.getElementById("printifyresult").innerHTML = "The total printify cost is: " + printifyresult.toFixed(2);
+  document.getElementById("etsyresult").innerHTML = "The total etsy cost is: " + etsyresult.toFixed(2);
   document.getElementById("totalcost").innerHTML = "The total cost is: " + totalcost.toFixed(2);
-    document.getElementById("profit").innerHTML = "The profit is: " + profit.toFixed(2);
+  document.getElementById("noprofit").innerHTML = "The noprofit Etsy price is: " + profit.toFixed(2);
+
+  document.getElementById("profit").innerHTML = "The total profit is: " + profit.toFixed(2);
 
 }
 </script>
