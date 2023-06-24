@@ -23,13 +23,13 @@
   
 <script>
 function calculate() {
-  var production = parseInt(document.getElementById("num1").value);
-  var shipping = parseInt(document.getElementById("num2").value);
+  var production = parseFloat(document.getElementById("num1").value);
+  var shipping = parseFloat(document.getElementById("num2").value);
   var printifyVAT = (production+shipping)*0.21;
   var printifyresult = shipping + production + printifyVAT;
   
   var listingcost = 0.2; // one time
-  var retailprice = parseInt(document.getElementById("retailprice").value);
+  var retailprice = parseFloat(document.getElementById("retailprice").value);
   var processcost = 0.04*retailprice+0.35;
   var transcost = 0.065*retailprice;
   var EtsyVAT = 0.01*retailprice+0.01*shipping+processcost*0.21;
