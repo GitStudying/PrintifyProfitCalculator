@@ -9,7 +9,7 @@
   <input type="number" id="num1" name="num1"><br>
   <label for="num2">Printify ship</label><br> <!-- 5.10 eur -->
   <input type="number" id="num2" name="num2"><br>
-  <label for="retailprice">Printify retail price</label><br> <!--  -->
+  <label for="retailprice">Etsy retail price</label><br> <!--  -->
   <input type="number" id="retailprice" name="retailprice"><br>
   <!--<label for="num3">Printify retail price</label><br>
   <input type="number" id="num3" name="num3"><br><br>-->
@@ -19,7 +19,9 @@
 <p id="printifyresult"></p> <!-- 17.07 eur -->
 <p id="etsyresult"></p> <!-- 3.13 eur -->
 <p id="totalcost"></p> <!-- 20.22 eur -->
-<p id="profit"></p> <!-- 20.22 eur -->
+<p id="noprofit"></p> <!-- 20.02 eur -->
+
+<p id="profit"></p> <!-- 1.43 eur -->
 
   
 <script>
@@ -39,10 +41,10 @@ function calculate() {
   
   var profit = retailprice - totalcost; // 1.43 eur
   
-  document.getElementById("printifyresult").innerHTML = "The total printify price is: " + printifyresult;
-  document.getElementById("etsyresult").innerHTML = "The etsy price is: " + etsyresult;
-  document.getElementById("totalcost").innerHTML = "The total cost is: " + totalcost;
-    document.getElementById("profit").innerHTML = "The profit is: " + profit;
+  document.getElementById("printifyresult").innerHTML = "The total printify price is: " + printifyresult.toFixed(2);
+  document.getElementById("etsyresult").innerHTML = "The etsy price is: " + etsyresult.toFixed(2);
+  document.getElementById("totalcost").innerHTML = "The total cost is: " + totalcost.toFixed(2);
+    document.getElementById("profit").innerHTML = "The profit is: " + profit.toFixed(2);
 
 }
 </script>
