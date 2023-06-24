@@ -9,8 +9,8 @@
   <input type="number" id="num1" name="num1"><br>
   <label for="num2">Printify ship</label><br> <!-- 5.10 eur -->
   <input type="number" id="num2" name="num2"><br>
-  <label for="num3">Printify retail price</label><br> <!--  -->
-  <input type="number" id="num3" name="num3"><br>
+  <label for="retailprice">Printify retail price</label><br> <!--  -->
+  <input type="number" id="retailprice" name="retailprice"><br>
   <!--<label for="num3">Printify retail price</label><br>
   <input type="number" id="num3" name="num3"><br><br>-->
   <button type="button" onclick="calculate()">Calculate</button>
@@ -29,9 +29,9 @@ function calculate() {
   var printifyresult = shipping + production + printifyVAT;
   
   var listingcost = 0.2; // one time
-  var retailprice = parseInt(document.getElementById("num2").value);
+  var retailprice = parseInt(document.getElementById("retailprice").value);
   var processcost = 0.04*retailprice+0.35;
-  var transcost = 6.5*retailprice;
+  var transcost = 0.065*retailprice;
   var EtsyVAT = 0.01*retailprice+0.01*shipping+processcost*0.21;
   var etsyresult = processcost+transcost+EtsyVAT; // in USD
   var totalcost = printifyresult + etsyresult;
