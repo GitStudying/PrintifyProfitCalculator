@@ -31,6 +31,9 @@
          width: 60%;
        }
      }
+      h1 {
+            text-align: center;
+      }
       
       h2 {
         font-size: 2rem;
@@ -86,7 +89,7 @@
   </head>
 <body>
 
-  <h1>Calculator</h1>
+  <h1>Prinfity Etsy profit calculator</h1>
   <div class="containerparent">
     <div class="left">
       <h2>Help and information</h2>
@@ -156,9 +159,9 @@
       if (input.value === '') {
         filledIn = false;
       }
-      if(input.value < 0) {
+      if(input.value <= 0) {
         filledIn = false;
-        input.value = 0;
+        input.value = Math.abs(input.value);
       }
     });
     
