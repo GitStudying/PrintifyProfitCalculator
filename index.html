@@ -61,7 +61,7 @@
   <input type="number" id="prod_cost" name="prod_cost" oninput="checkInputs()"><br>
   <label for="ship_cost">Printify shipping cost</label><br> <!-- 5.10 eur -->
   <input type="number" id="ship_cost" name="ship_cost" oninput="checkInputs()"><br>
-  <label for="retailprice">Etsy retail price (INCLUDING SHIPPING)</label><br> <!--  -->
+  <label for="retailprice">Printify retail price (EXCLUDING SHIPPING)</label><br> <!--  -->
   <input type="number" id="retailprice" name="retailprice" oninput="checkInputs()" onkeydown="if (event.keyCode === 13) { calculate(); return false; }"><br>
   <!--<label for="num3">Printify retail price</label><br>
   <input type="number" id="num3" name="num3"><br><br>-->
@@ -86,23 +86,24 @@ function calculate() {
   var printifyresult = printify_shipping + printify_production_costs + printify_VAT;
   
   var listingcost = 0.2; // one time
-  var retailprice = parseFloat(document.getElementById("retailprice").value);
+  var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
+  var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
   
-  var processcost = 0.04*retailprice+0.35;
-  var transcost = 0.065*retailprice;
-  var EtsyVAT = 0.01*retailprice+0.01*printify_shipping+processcost*0.21;
+  var processcost = 0.04*retailprice_incl_shipping+0.35;
+  var transcost = 0.065*retailprice_incl_shipping;
+  var EtsyVAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+processcost*0.21;
   var etsyresult = processcost+transcost+EtsyVAT; 
   var totalcost = printifyresult + etsyresult;
 
   var noprofit = (printifyresult + 0.35 * 1.21 - 0.01 * printify_shipping) / (1 + 0.065 + 0.01 + 0.04 * 1.21);
-  var profit = retailprice - totalcost; // 1.43 eur
+  var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
   
-  document.getElementById("printifyresult").innerHTML = "Printify: Total  costs: " + printifyresult.toFixed(2);
-  document.getElementById("etsyresult").innerHTML = "The total etsy cost is: " + etsyresult.toFixed(2);
-  document.getElementById("totalcost").innerHTML = "The total cost is: " + totalcost.toFixed(2);
+  document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printifyresult.toFixed(2);
+  document.getElementById("etsyresult").innerHTML = "Etsy: Total cost " + etsyresult.toFixed(2);
+  document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
   //document.getElementById("noprofit").innerHTML = "The noprofit Etsy price is: " + noprofit.toFixed(2);
 
-  document.getElementById("profit").innerHTML = "The total profit is: " + profit.toFixed(2);
+  document.getElementById("profit").innerHTML = "Total profit " + profit.toFixed(2);
 
 }
 
