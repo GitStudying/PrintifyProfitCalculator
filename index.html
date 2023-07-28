@@ -156,6 +156,10 @@
       if (input.value === '') {
         filledIn = false;
       }
+      if(input.value < 0) {
+        filledIn = false;
+        input.value = 0;
+      }
     });
     
     if (filledIn) {
@@ -163,7 +167,7 @@
       calculate();
     } else 
     {
-      document.getElementById('error').textContent = 'Please enter a valid number for all fields';
+      document.getElementById('error').textContent = 'Please enter a valid number (above 0) for all fields';
     }
   }
   </script>
