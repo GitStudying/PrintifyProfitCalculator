@@ -85,6 +85,12 @@
       .error {
         display: block;
       }
+      #results {
+        display:block;
+      }
+      #results.error {
+        display:none;
+      }
     </style>
   </head>
 <body>
@@ -111,13 +117,15 @@
         <button type="button" onclick="checkInputs()">Calculate</button>
         <label id="error" class="error"></label>
       </form>
-      
+
+      <div id="results">
       <p id="printifyresult"></p> <!-- 17.07 eur -->
       <p id="etsyresult"></p> <!-- 3.13 eur -->
       <p id="totalcost"></p> <!-- 20.22 eur -->
       <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
       
       <p id="profit"></p> <!-- 1.43 eur -->
+      </div>
     </div>
   </div>
 
@@ -167,10 +175,13 @@
     
     if (filledIn) {
       document.getElementById('error').textContent = '';
+      document.getElementById('results').classList.remove("error");
+
       calculate();
     } else 
     {
       document.getElementById('error').textContent = 'Please enter a valid number (above 0) for all fields';
+      document.getElementById('results').classList.add("error");
     }
   }
   </script>
