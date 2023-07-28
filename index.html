@@ -58,11 +58,11 @@
 
 <form>
   <label for="prod_cost">Printify production cost</label><br> <!-- 9.01 eur -->
-  <input type="number" id="prod_cost" name="prod_cost"><br>
+  <input type="number" id="prod_cost" name="prod_cost" oninput="checkInputs()"><br>
   <label for="ship_cost">Printify shipping cost</label><br> <!-- 5.10 eur -->
-  <input type="number" id="ship_cost" name="ship_cost"><br>
+  <input type="number" id="ship_cost" name="ship_cost" oninput="checkInputs()"><br>
   <label for="retailprice">Etsy retail price (INCLUDING SHIPPING)</label><br> <!--  -->
-  <input type="number" id="retailprice" name="retailprice"><br>
+  <input type="number" id="retailprice" name="retailprice" oninput="checkInputs()" onkeydown="if (event.keyCode === 13) { calculate(); return false; }"><br>
   <!--<label for="num3">Printify retail price</label><br>
   <input type="number" id="num3" name="num3"><br><br>-->
   <!--<label for="nSales">Amount of sales (expected) over listing months</label><br>
@@ -104,6 +104,21 @@ function calculate() {
 
   document.getElementById("profit").innerHTML = "The total profit is: " + profit.toFixed(2);
 
+}
+
+function checkInputs() {
+  var inputs = document.querySelectorAll('input[type=number]');
+  var filledIn = true;
+  
+  inputs.forEach(function(input) {
+    if (input.value === '') {
+      filledIn = false;
+    }
+  });
+  
+  if (filledIn) {
+    calculate();
+  }
 }
 </script>
 
