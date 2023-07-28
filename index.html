@@ -7,12 +7,13 @@
       }
 
       .containerparent {
+        margin: 2em;
         display: flex;
         justify-content: space-between;
         flex-direction: column;
       }
 
-      .right {
+      .left, .right {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -34,11 +35,12 @@
       h2 {
         font-size: 2rem;
         color: #333;
+        margin-top: 20px;
         margin-bottom: 1rem;
       }
       
       form {
-       
+       margin-top: 20px;
       }
       
       label {
@@ -77,6 +79,9 @@
         font-weight: bold;
         color: green;
       }
+      .error {
+        display: block;
+      }
     </style>
   </head>
 <body>
@@ -91,16 +96,17 @@
     <div class="right">
       <form>
         <label for="prod_cost">Printify production cost</label><br> <!-- 9.01 eur -->
-        <input type="number" id="prod_cost" name="prod_cost" oninput="checkInputs()"><br>
+        <input type="number" id="prod_cost" name="prod_cost" oninput="checkInputs()" min="0"><br>
         <label for="ship_cost">Printify shipping cost</label><br> <!-- 5.10 eur -->
-        <input type="number" id="ship_cost" name="ship_cost" oninput="checkInputs()"><br>
+        <input type="number" id="ship_cost" name="ship_cost" oninput="checkInputs()" min="0"><br>
         <label for="retailprice">Printify retail price (EXCLUDING SHIPPING)</label><br> <!--  -->
-        <input type="number" id="retailprice" name="retailprice" oninput="checkInputs()" onkeydown="if (event.keyCode === 13) { calculate(); return false; }"><br>
+        <input type="number" id="retailprice" name="retailprice" oninput="checkInputs()" min="0" onkeydown="if (event.keyCode === 13) { calculate(); return false; }"><br>
         <!--<label for="num3">Printify retail price</label><br>
         <input type="number" id="num3" name="num3"><br><br>-->
         <!--<label for="nSales">Amount of sales (expected) over listing months</label><br>
         <input type="number" id="nSales" name="nSales"><br><br>-->
-        <button type="button" onclick="calculate()">Calculate</button>
+        <button type="button" onclick="checkInputs()">Calculate</button>
+        <label id="error" class="error"></label>
       </form>
       
       <p id="printifyresult"></p> <!-- 17.07 eur -->
@@ -153,7 +159,11 @@
     });
     
     if (filledIn) {
+      document.getElementById('error').textContent = '';
       calculate();
+    } else 
+    {
+      document.getElementById('error').textContent = 'Please enter a valid number for all fields';
     }
   }
   </script>
