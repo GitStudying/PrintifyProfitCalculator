@@ -4,11 +4,24 @@
     <style>
       body {
         font-family: Helvetica;
+      }
+
+      .containerparent {
         display: flex;
         justify-content: space-between;
+        flex-direction: column;
+      }
+
+      .right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
      @media only screen and (min-width: 860px)
      {
+       .containerparent {
+         flex-direction: row;
+       }
        .left {
          width: 30%;
        }
@@ -25,9 +38,7 @@
       }
       
       form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+       
       }
       
       label {
@@ -71,33 +82,34 @@
 <body>
 
   <h1>Calculator</h1>
-  
-  <div class="left">
-    <h2>Help and information</h2>
-    <p>If you have printify prices synced with Etsy these details should give an overview of the Etsy or final cost and profit. <br> 
-    All the data needed can be found in your product details and choose a product variant for which you want to calculate the costs and profit. </p>
-  </div>
-  <div class="right">
-    <form>
-      <label for="prod_cost">Printify production cost</label><br> <!-- 9.01 eur -->
-      <input type="number" id="prod_cost" name="prod_cost" oninput="checkInputs()"><br>
-      <label for="ship_cost">Printify shipping cost</label><br> <!-- 5.10 eur -->
-      <input type="number" id="ship_cost" name="ship_cost" oninput="checkInputs()"><br>
-      <label for="retailprice">Printify retail price (EXCLUDING SHIPPING)</label><br> <!--  -->
-      <input type="number" id="retailprice" name="retailprice" oninput="checkInputs()" onkeydown="if (event.keyCode === 13) { calculate(); return false; }"><br>
-      <!--<label for="num3">Printify retail price</label><br>
-      <input type="number" id="num3" name="num3"><br><br>-->
-      <!--<label for="nSales">Amount of sales (expected) over listing months</label><br>
-      <input type="number" id="nSales" name="nSales"><br><br>-->
-      <button type="button" onclick="calculate()">Calculate</button>
-    </form>
-    
-    <p id="printifyresult"></p> <!-- 17.07 eur -->
-    <p id="etsyresult"></p> <!-- 3.13 eur -->
-    <p id="totalcost"></p> <!-- 20.22 eur -->
-    <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
-    
-    <p id="profit"></p> <!-- 1.43 eur -->
+  <div class="containerparent">
+    <div class="left">
+      <h2>Help and information</h2>
+      <p>If you have printify prices synced with Etsy these details should give an overview of the Etsy or final cost and profit. <br> 
+      All the data needed can be found in your product details and choose a product variant for which you want to calculate the costs and profit. </p>
+    </div>
+    <div class="right">
+      <form>
+        <label for="prod_cost">Printify production cost</label><br> <!-- 9.01 eur -->
+        <input type="number" id="prod_cost" name="prod_cost" oninput="checkInputs()"><br>
+        <label for="ship_cost">Printify shipping cost</label><br> <!-- 5.10 eur -->
+        <input type="number" id="ship_cost" name="ship_cost" oninput="checkInputs()"><br>
+        <label for="retailprice">Printify retail price (EXCLUDING SHIPPING)</label><br> <!--  -->
+        <input type="number" id="retailprice" name="retailprice" oninput="checkInputs()" onkeydown="if (event.keyCode === 13) { calculate(); return false; }"><br>
+        <!--<label for="num3">Printify retail price</label><br>
+        <input type="number" id="num3" name="num3"><br><br>-->
+        <!--<label for="nSales">Amount of sales (expected) over listing months</label><br>
+        <input type="number" id="nSales" name="nSales"><br><br>-->
+        <button type="button" onclick="calculate()">Calculate</button>
+      </form>
+      
+      <p id="printifyresult"></p> <!-- 17.07 eur -->
+      <p id="etsyresult"></p> <!-- 3.13 eur -->
+      <p id="totalcost"></p> <!-- 20.22 eur -->
+      <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
+      
+      <p id="profit"></p> <!-- 1.43 eur -->
+    </div>
   </div>
 
   
