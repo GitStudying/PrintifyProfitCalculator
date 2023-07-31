@@ -171,6 +171,7 @@
     var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
     var plat_cost = 0;
+    errorFeedback();
     if (plat == "Etsy") // Etsy
     {
       var listingcost = 0.2; // one time
