@@ -168,7 +168,7 @@
 
     var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
-
+    var plat_cost;
     if (plat == "Etsy") // Etsy
     {
       var listingcost = 0.2; // one time
@@ -176,7 +176,7 @@
       var transcost = 0.065*retailprice_incl_shipping;
       var EtsyVAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+processcost*VAT_rate;
       var etsyresult = processcost+transcost+EtsyVAT; 
-      var plat_cost = etsyresult;
+      plat_cost = etsyresult;
     } else if (plat == "BigCartel") // Big Cartel    // ONLY payment fees, so calculate them here
     {    
       var select_BC = document.getElementById("BigCartel_select");
