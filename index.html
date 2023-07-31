@@ -103,11 +103,11 @@
   </head>
 <body>
 
-  <h1>Prinfity Etsy profit calculator</h1>
+  <h1>Prinfity profit calculator</h1>
   <div class="containerparent">
     <div class="left">
       <h2>Help and information</h2>
-      <p>If you have printify prices synced with Etsy these details should give an overview of the Etsy or final cost and profit. <br> 
+      <p>These details should give an overview of the selling platform or final cost and profit. <br> 
       All the data needed can be found in your product details and choose a product variant for which you want to calculate the costs and profit. This tool has been made to approximate 
       cost. I am not responsible for any errors. In my usage the error was smaller than 1%, but depending on currencies and specific details it can yield a bigger error.</p>
     </div>
@@ -147,7 +147,7 @@
 
       <div id="results">
       <p id="printifyresult"></p> <!-- 17.07 eur -->
-      <p id="etsyresult"></p> <!-- 3.13 eur -->
+      <p id="platresult"></p> <!-- 3.13 eur -->
       <p id="totalcost"></p> <!-- 20.22 eur -->
       <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
       
@@ -196,9 +196,9 @@
     var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
     
     document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printifyresult.toFixed(2);
-    document.getElementById("etsyresult").innerHTML = "Etsy: Total cost " + plat_cost.toFixed(2);
+    document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
     document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
-    //document.getElementById("noprofit").innerHTML = "The noprofit Etsy price is: " + noprofit.toFixed(2);
+    //document.getElementById("noprofit").innerHTML = "The noprofit plat price is: " + noprofit.toFixed(2);
   
     document.getElementById("profit").innerHTML = "Total profit " + profit.toFixed(2);
   
