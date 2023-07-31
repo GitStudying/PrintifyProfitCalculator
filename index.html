@@ -169,11 +169,6 @@
     var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
 
-    var select = document.getElementById("plat_select");
-    var plat = select.value;
-
-    var BC_parent = document.getElementById("BC_parent");
-    BC_parent.style.display = "none";
     if (plat == "Etsy") // Etsy
     {
       var listingcost = 0.2; // one time
@@ -183,10 +178,7 @@
       var etsyresult = processcost+transcost+EtsyVAT; 
       var plat_cost = etsyresult;
     } else if (plat == "BigCartel") // Big Cartel    // ONLY payment fees, so calculate them here
-    {
-      // Show BC select
-      BC_parent.style.display = "block";
-      
+    {    
       var select_BC = document.getElementById("BigCartel_select");
       var BC_payment = select.value;
       if(BC_payment == 'Stripe')
@@ -204,7 +196,7 @@
     var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
     
     document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printifyresult.toFixed(2);
-    document.getElementById("etsyresult").innerHTML = "Etsy: Total cost " + etsyresult.toFixed(2);
+    document.getElementById("etsyresult").innerHTML = "Etsy: Total cost " + plat_cost.toFixed(2);
     document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
     //document.getElementById("noprofit").innerHTML = "The noprofit Etsy price is: " + noprofit.toFixed(2);
   
@@ -216,7 +208,17 @@
     var inputs = document.querySelectorAll('input[type=number]');
     var filledIn = true;
 
-    
+    var select = document.getElementById("plat_select");
+    var plat = select.value;
+
+    var BC_parent = document.getElementById("BC_parent");
+    BC_parent.style.display = "none";
+
+    if (plat == "BigCartel") // Big Cartel    // ONLY payment fees, so calculate them here
+    {
+      // Show BC select
+      BC_parent.style.display = "block";
+    }
     
     inputs.forEach(function(input) {
       if (input.value === '') {
@@ -232,7 +234,7 @@
       document.getElementById('error').textContent = '';
       document.getElementById('results').classList.remove("error");
 
-      calculate();
+      calculate(plat);
     } else 
     {
       document.getElementById('error').textContent = 'Please enter a valid number (above 0) for all fields';
