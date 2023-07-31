@@ -108,17 +108,26 @@
     <div class="left">
       <h2>Help and information</h2>
       <p>If you have printify prices synced with Etsy these details should give an overview of the Etsy or final cost and profit. <br> 
-      All the data needed can be found in your product details and choose a product variant for which you want to calculate the costs and profit. </p>
+      All the data needed can be found in your product details and choose a product variant for which you want to calculate the costs and profit. This tool has been made to approximate 
+      cost. I am not responsible for any errors. In my usage the error was smaller than 1%, but depending on currencies and specific details it can yield a bigger error.</p>
     </div>
     <div class="right">
       <form>
         <label for="plat_select">Selling Platform</label><br>
-        <select class="select" id="plat_select" name="plat_select">
+        <select class="select" id="plat_select" name="plat_select" onchange="checkInputs()">
           <option value="">Select an option</option>
           <option value="Etsy">Etsy</option>
           <option value="BigCartel">Big Cartel</option>
-          <!--<option value="3"></option>-->
+          <!--<option value="3">Other?</option>-->
         </select>
+        <div id="BC_parent" style="display:none;">
+          <label for="BigCartel_select">BigCartel payment type</label><br>
+          <select class="select" id="BigCartel_select" name="BigCartel_select" onchange="checkInputs()">
+            <option value="">Select an option</option>
+            <option value="Stripe">Stripe</option>
+            <option value="Paypal">Paypal</option>
+          </select>
+        </div>
         <label for="prod_cost">Printify production cost</label><br> <!-- 9.01 eur -->
         <input type="number" id="prod_cost" name="prod_cost" oninput="checkInputs()" min="0"><br>
         <label for="ship_cost">Printify shipping cost</label><br> <!-- 5.10 eur -->
@@ -149,23 +158,47 @@
 
   
   <script>
-  function calculate() {
+  function calculate(plat="") {
     var printify_production_costs = parseFloat(document.getElementById("prod_cost").value);
     var printify_shipping = parseFloat(document.getElementById("ship_cost").value);
     var VAT_rate = parseFloat(document.getElementById("VATamount").value)/100;
 
     var printify_VAT = (printify_production_costs+printify_shipping)*VAT_rate;
     var printifyresult = printify_shipping + printify_production_costs + printify_VAT;
-    
-    var listingcost = 0.2; // one time
+
     var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
+
+    var select = document.getElementById("plat_select");
+    var plat = select.value;
+
+    var BC_parent = document.getElementById("BC_parent");
+    BC_parent.style.display = "none";
+    if (plat == "Etsy") // Etsy
+    {
+      var listingcost = 0.2; // one time
+      var processcost = 0.04*retailprice_incl_shipping+0.35;
+      var transcost = 0.065*retailprice_incl_shipping;
+      var EtsyVAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+processcost*VAT_rate;
+      var etsyresult = processcost+transcost+EtsyVAT; 
+      var plat_cost = etsyresult;
+    } else if (plat == "BigCartel") // Big Cartel    // ONLY payment fees, so calculate them here
+    {
+      // Show BC select
+      BC_parent.style.display = "block";
+      
+      var select_BC = document.getElementById("BigCartel_select");
+      var BC_payment = select.value;
+      if(BC_payment == 'Stripe')
+      {
+        plat_cost = 0.015*retailprice_incl_shipping + .25;//1,5% + € 0,25
+      } else if (BC_payment == 'Paypal')
+      {
+        plat_cost = 0.044*retailprice_incl_shipping; // 4.4% + any currency fees
+      }
+    }
     
-    var processcost = 0.04*retailprice_incl_shipping+0.35;
-    var transcost = 0.065*retailprice_incl_shipping;
-    var EtsyVAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+processcost*VAT_rate;
-    var etsyresult = processcost+transcost+EtsyVAT; 
-    var totalcost = printifyresult + etsyresult;
+    var totalcost = printifyresult + plat_cost;
   
     var noprofit = (printifyresult + 0.35 * (1 + VAT_rate) - 0.01 * printify_shipping) / (1 + 0.065 + 0.01 + 0.04 * (1+VAT_rate));
     var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
@@ -182,6 +215,8 @@
   function checkInputs() {
     var inputs = document.querySelectorAll('input[type=number]');
     var filledIn = true;
+
+    
     
     inputs.forEach(function(input) {
       if (input.value === '') {
