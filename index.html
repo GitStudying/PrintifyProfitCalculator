@@ -145,14 +145,15 @@
         <label id="error" class="error"></label>
       </form>
 
-      <p id="printifyresult"></p> <!-- 17.07 eur -->
-
-      <div id="results">
-        <p id="platresult"></p> <!-- 3.13 eur -->
-        <p id="totalcost"></p> <!-- 20.22 eur -->
-        <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
-        
-        <p id="profit"></p> <!-- 1.43 eur -->
+      <div>
+        <p id="printifyresult"></p> <!-- 17.07 eur -->
+        <div id="results">
+          <p id="platresult"></p> <!-- 3.13 eur -->
+          <p id="totalcost"></p> <!-- 20.22 eur -->
+          <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
+          
+          <p id="profit"></p> <!-- 1.43 eur -->
+        </div>
       </div>
     </div>
   </div>
@@ -189,11 +190,12 @@
       } else if (BC_payment == 'Paypal')
       {
         plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
+      } else {
+        errorFeedback('platform');
       }
     } else
     {
-      document.getElementById('error').textContent = 'Not valid platform selected';
-      document.getElementById('results').classList.add("error");;
+      errorFeedback('platform');
     }
     
     var totalcost = printifyresult + plat_cost;
@@ -209,6 +211,25 @@
   
     document.getElementById("profit").innerHTML = "Total profit " + profit.toFixed(2);
   
+  }
+
+  function errorFeedback(type = '')
+  {
+    var errorEl = document.getElementById('error');
+    var resultsEl = document.getElementById('results')
+    if(type = 'platform')
+    {
+      errorEl.textContent = 'Not valid platform and details selected';
+      resultsEl.classList.add("error");
+    } else if (type = 'input')
+    {
+      errorEl.textContent = 'Please enter a valid number (above 0) for all fields';
+      resultsEl.classList.add("error");
+    } else {
+      // Clear error
+      errorEl.textContent = '';
+      resultsEl.classList.remove("error");
+    }
   }
   
   function checkInputs() {
@@ -237,17 +258,12 @@
       }
     });
 
-    var errorEl = document.getElementById('error');
-    var resultsEl = document.getElementById('results')
     if (filledIn) {
-      errorEl.textContent = '';
-      resultsEl.classList.remove("error");
-
+      errorFeedback();
       calculate(plat);
     } else 
     {
-      errorEl.textContent = 'Please enter a valid number (above 0) for all fields';
-      resultsEl.classList.add("error");
+      errorFeedback('input');
     }
   }
   </script>
