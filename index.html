@@ -180,7 +180,7 @@
     } else if (plat == "BigCartel") // Big Cartel    // ONLY payment fees, so calculate them here
     {    
       var select_BC = document.getElementById("BigCartel_select");
-      var BC_payment = select.value;
+      var BC_payment = select_BC.value;
       if(BC_payment == 'Stripe')
       {
         plat_cost = 0.015*retailprice_incl_shipping + .25;//1,5% + € 0,25
