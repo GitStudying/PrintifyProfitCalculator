@@ -145,13 +145,14 @@
         <label id="error" class="error"></label>
       </form>
 
-      <div id="results">
       <p id="printifyresult"></p> <!-- 17.07 eur -->
-      <p id="platresult"></p> <!-- 3.13 eur -->
-      <p id="totalcost"></p> <!-- 20.22 eur -->
-      <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
-      
-      <p id="profit"></p> <!-- 1.43 eur -->
+
+      <div id="results">
+        <p id="platresult"></p> <!-- 3.13 eur -->
+        <p id="totalcost"></p> <!-- 20.22 eur -->
+        <!--<p id="noprofit"></p>--> <!-- 20.02 eur -->
+        
+        <p id="profit"></p> <!-- 1.43 eur -->
       </div>
     </div>
   </div>
@@ -168,7 +169,7 @@
 
     var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
-    var plat_cost;
+    var plat_cost = 0;
     if (plat == "Etsy") // Etsy
     {
       var listingcost = 0.2; // one time
@@ -189,6 +190,10 @@
       {
         plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
       }
+    } else
+    {
+      document.getElementById('error').textContent = 'Not valid platform selected';
+      document.getElementById('results').classList.add("error");;
     }
     
     var totalcost = printifyresult + plat_cost;
@@ -197,6 +202,7 @@
     var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
     
     document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printifyresult.toFixed(2);
+    
     document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
     document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
     //document.getElementById("noprofit").innerHTML = "The noprofit plat price is: " + noprofit.toFixed(2);
@@ -230,16 +236,18 @@
         input.value = Math.abs(input.value);
       }
     });
-    
+
+    var errorEl = document.getElementById('error');
+    var resultsEl = document.getElementById('results')
     if (filledIn) {
-      document.getElementById('error').textContent = '';
-      document.getElementById('results').classList.remove("error");
+      errorEl.textContent = '';
+      resultsEl.classList.remove("error");
 
       calculate(plat);
     } else 
     {
-      document.getElementById('error').textContent = 'Please enter a valid number (above 0) for all fields';
-      document.getElementById('results').classList.add("error");
+      errorEl.textContent = 'Please enter a valid number (above 0) for all fields';
+      resultsEl.classList.add("error");
     }
   }
   </script>
