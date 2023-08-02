@@ -116,6 +116,7 @@
         <label for="plat_select">Selling Platform</label><br>
         <select class="select" id="plat_select" name="plat_select" onchange="checkInputs()">
           <option value="">Select an option</option>
+          <option value="Cheapest">Cheapest</option>
           <option value="Etsy">Etsy</option>
           <option value="BigCartel">Big Cartel</option>
           <!--<option value="3">Other?</option>-->
@@ -166,12 +167,20 @@
     var VAT_rate = parseFloat(document.getElementById("VATamount").value)/100;
 
     var printify_VAT = (printify_production_costs+printify_shipping)*VAT_rate;
-    var printifyresult = printify_shipping + printify_production_costs + printify_VAT;
+    var printify_result = printify_shipping + printify_production_costs + printify_VAT;
 
+    document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printify_result.toFixed(2);
+    
     var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
     var plat_cost = 0;
-    if (plat == "Etsy") // Etsy
+
+    if(plat == "")
+    {
+      errorFeedback('platform');
+    }
+      
+    if (plat == "Etsy" || plat == "Cheapest") // Etsy
     {
       var listingcost = 0.2; // one time
       var processcost = 0.04*retailprice_incl_shipping+0.35;
@@ -179,40 +188,58 @@
       var EtsyVAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+processcost*VAT_rate;
       var etsyresult = processcost+transcost+EtsyVAT; 
       plat_cost = etsyresult;
-    } else if (plat == "BigCartel") // Big Cartel    // ONLY payment fees, so calculate them here
+      cheapCheck(plat,plat_cost);
+    } 
+    if (plat == "BigCartel"  || plat == "Cheapest") // Big Cartel    // ONLY payment fees, so calculate them here
     {    
       var select_BC = document.getElementById("BigCartel_select");
       var BC_payment = select_BC.value;
       BC_VAT = VAT_rate*retailprice_incl_shipping;
-      if(BC_payment == 'Stripe')
+      if(BC_payment == 'Stripe' || plat == "Cheapest" )
       {
         plat_cost = 0.015*(retailprice_incl_shipping+BC_VAT) + .25; //1,5% + € 0,25
-      } else if (BC_payment == 'Paypal')
+        cheapCheck(plat,plat_cost);
+      } else if (BC_payment == 'Paypal' || plat == "Cheapest")
       {
         plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
+        cheapCheck(plat,plat_cost);
       } else {
         errorFeedback('platform');
       }
-    } else
-    {
-      errorFeedback('platform');
-    }
+      
+    } 
     
-    var totalcost = printifyresult + plat_cost;
+    
+    var totalcost = printify_result + plat_cost;
   
-    var noprofit = (printifyresult + 0.35 * (1 + VAT_rate) - 0.01 * printify_shipping) / (1 + 0.065 + 0.01 + 0.04 * (1+VAT_rate)); // Platform dependent?
+    var noprofit = (printify_result + 0.35 * (1 + VAT_rate) - 0.01 * printify_shipping) / (1 + 0.065 + 0.01 + 0.04 * (1+VAT_rate)); // Platform dependent?
     var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
     
-    document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printifyresult.toFixed(2);
     
     document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
     document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
     //document.getElementById("noprofit").innerHTML = "The noprofit plat price is: " + noprofit.toFixed(2);
   
     document.getElementById("profit").innerHTML = "Total profit " + profit.toFixed(2);
-  
+    
+    document.getElementById("noprofit").innerHTML = "The cheapest option available here is: " + cheapest_plat + " at a price of: " + lowest_price.toFixed(2);
   }
-
+    
+  var cheapest_plat;
+  var lowest_price;
+  function cheapCheck(plat, price)
+  {
+    if(!lowest_price)
+    {
+      lowest_price = price;
+      return;
+    }
+    if(price < lowest_price)
+    {
+      lowest_price = price;
+      cheapest_plat = plat;
+    }
+  }
   function errorFeedback(type = '')
   {
     var errorEl = document.getElementById('error');
@@ -221,14 +248,18 @@
     {
       errorEl.textContent = 'Not valid platform and details selected';
       resultsEl.classList.add("error");
-    } else if (type == 'input')
+      return;
+    } 
+    if (type == 'input')
     {
       errorEl.textContent = 'Please enter a valid number (above 0) for all fields';
       resultsEl.classList.add("error");
-    } else {
-      // Clear error
-      errorEl.textContent = '';
-      resultsEl.classList.remove("error");
+      return;
+    } 
+    
+    // Clear error
+    errorEl.textContent = '';
+    resultsEl.classList.remove("error");
     }
   }
   
