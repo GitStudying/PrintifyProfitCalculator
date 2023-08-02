@@ -150,9 +150,10 @@
         <p id="printifyresult"></p> <!-- 17.07 eur -->
         <div id="results">
           <p id="platresult"></p> <!-- 3.13 eur -->
+          <!--<p id="cheapestOption"></p> -->
           <p id="totalcost"></p> <!-- 20.22 eur -->
           <!--<p id="noprofit"></p>--> 
-          <p id="cheapestOption"></p> 
+          
           <p id="profit"></p> <!-- 1.43 eur -->
         </div>
       </div>
@@ -188,7 +189,7 @@
       var EtsyVAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+processcost*VAT_rate;
       var etsyresult = processcost+transcost+EtsyVAT; 
       plat_cost = etsyresult;
-      cheapCheck(plat,plat_cost);
+      cheapCheck("Etsy",plat_cost);
     } 
     if (plat == "BigCartel"  || plat == "Cheapest") // Big Cartel    // ONLY payment fees, so calculate them here
     {    
@@ -198,11 +199,11 @@
       if(BC_payment == 'Stripe' || plat == "Cheapest" )
       {
         plat_cost = 0.015*(retailprice_incl_shipping+BC_VAT) + .25; //1,5% + € 0,25
-        cheapCheck(plat,plat_cost);
+        cheapCheck("BigCartel stripe",plat_cost);
       } else if (BC_payment == 'Paypal' || plat == "Cheapest")
       {
         plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
-        cheapCheck(plat,plat_cost);
+        cheapCheck("BigCartel paypal",plat_cost);
       } else {
         errorFeedback('platform');
       }
@@ -216,7 +217,7 @@
     var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
     
     
-    document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
+    
     document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
     //document.getElementById("noprofit").innerHTML = "The noprofit plat price is: " + noprofit.toFixed(2);
   
@@ -224,7 +225,10 @@
 
     if (plat == "Cheapest") 
     {
-      document.getElementById("cheapestOption").innerHTML = "The cheapest option available here is: " + cheapest_plat + " at a price of: " + lowest_price.toFixed(2);
+      document.getElementById("platresult").innerHTML = "Cheapest platform available: " + cheapest_plat + " at a price of: " + lowest_price.toFixed(2);
+    } else 
+    {
+      document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
     }
   }
     
