@@ -205,7 +205,7 @@
         plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
         cheapCheck("BigCartel paypal",plat_cost);
       } 
-      if (BC_payment == ""  || plat != "Cheapest")
+      if (BC_payment == ""  && plat != "Cheapest")
       {
         errorFeedback('platform');
       }
