@@ -183,12 +183,11 @@
       
     if (plat == "Etsy" || plat == "Cheapest") // Etsy
     {
-      var listingcost = 0.2; // one time
-      var processcost = 0.04*retailprice_incl_shipping+0.35;
-      var transcost = 0.065*retailprice_incl_shipping;
-      var EtsyVAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+processcost*VAT_rate;
-      var etsyresult = processcost+transcost+EtsyVAT; 
-      plat_cost = etsyresult;
+      var listing_cost = 0.2; // one time
+      var process_cost = 0.04*retailprice_incl_shipping+0.35;
+      var trans_cost = 0.065*retailprice_incl_shipping;
+      var Etsy_VAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+process_cost*VAT_rate;
+      var plat_cost = process_cost+trans_cost+Etsy_VAT; 
       cheapCheck("Etsy",plat_cost);
     } 
     if (plat == "BigCartel"  || plat == "Cheapest") // Big Cartel    // ONLY payment fees, so calculate them here
@@ -200,14 +199,16 @@
       {
         plat_cost = 0.015*(retailprice_incl_shipping+BC_VAT) + .25; //1,5% + € 0,25
         cheapCheck("BigCartel stripe",plat_cost);
-      } else if (BC_payment == 'Paypal' || plat == "Cheapest")
+      } 
+      if (BC_payment == 'Paypal' || plat == "Cheapest")
       {
         plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
         cheapCheck("BigCartel paypal",plat_cost);
-      } else {
+      } 
+      if (BC_payment == "")
+      {
         errorFeedback('platform');
       }
-      
     } 
     
     
