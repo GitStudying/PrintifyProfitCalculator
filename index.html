@@ -221,8 +221,11 @@
     //document.getElementById("noprofit").innerHTML = "The noprofit plat price is: " + noprofit.toFixed(2);
   
     document.getElementById("profit").innerHTML = "Total profit " + profit.toFixed(2);
-    
-    document.getElementById("cheapestOption").innerHTML = "The cheapest option available here is: " + cheapest_plat + " at a price of: " + lowest_price.toFixed(2);
+
+    if (plat == "Cheapest") 
+    {
+      document.getElementById("cheapestOption").innerHTML = "The cheapest option available here is: " + cheapest_plat + " at a price of: " + lowest_price.toFixed(2);
+    }
   }
     
   var cheapest_plat;
@@ -260,7 +263,6 @@
     // Clear error
     errorEl.textContent = '';
     resultsEl.classList.remove("error");
-    }
   }
   
   function checkInputs() {
