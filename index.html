@@ -236,12 +236,10 @@
         } else if (profit > 0.01) { 
           retailprice_excl_shipping -= 0.01;
         }
-        return
       } else if (profit <= Math.abs(0.01)) // noprofit price in range/found
       {
         console.log("Break-even found")
         document.getElementById("noprofit").innerHTML = "The break-even platform price is: " + profit.toFixed(2);
-        return;
       }
       
       document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
