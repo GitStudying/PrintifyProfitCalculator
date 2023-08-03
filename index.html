@@ -182,7 +182,7 @@
     var finalaccuracy = 0.01;
     var firsttime = true;
     var iter = 0;
-    while (profit == null && iter < 1000 || Math.abs(profit) > finalaccuracy &&  iter < 100000 ) {
+    while ((profit == null || Math.abs(profit) > finalaccuracy) &&  iter < 1000) {
       iter ++;
       // Set retailprice_excl_shipping manually and run this code to check if profit goes to 0.
       var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
@@ -243,7 +243,7 @@
         stepsize = Math.abs(profit) / 10;
         console.log("stepsize,profit: "+stepsize+","+profit)
 
-        /*if(Math.abs(profit) < stepsize)
+        /*if(stepsize > Math.abs(profit))
         {
           stepsize /= 10;
         } else */
