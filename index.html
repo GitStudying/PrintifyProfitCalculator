@@ -266,6 +266,12 @@
       resultsEl.classList.add("error");
       return;
     } 
+    if (type == 'no_prod_cost')
+    {
+      errorEl.textContent = 'No production cost filled in, only platform data will be shown until the production field is filled in.';
+      //resultsEl.classList.add("error");
+      return;
+    } 
     
     // Clear error
     errorEl.textContent = '';
@@ -287,6 +293,8 @@
       // Show BC select
       BC_parent.style.display = "block";
     }
+
+    errorFeedback(); // Clear errors of previous inputs
     
     inputs.forEach(function(input) {
       if (input.value === '') {
@@ -296,10 +304,15 @@
         filledIn = false;
         input.value = Math.abs(input.value);
       }
+      if(input.id == "prod_cost" && !filledIn)
+      {
+        errorFeedback('no_prod_cost');
+        filledIn = true;
+        return;
+      } 
     });
 
     if (filledIn) {
-      errorFeedback();
       calculate(plat);
     } else 
     {
