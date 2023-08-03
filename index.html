@@ -178,7 +178,7 @@
       errorFeedback('platform');
     }
     var profit;
-    var stepsize = retailprice_incl_shipping;
+    var stepsize = 0.01;
     var finalaccuracy = 0.01;
     var firsttime = true;
     var iter = 0;
@@ -240,10 +240,11 @@
         firsttime = false;
       } else if(Math.abs(profit) > finalaccuracy) 
       { 
-        if(Math.abs(profit) < stepsize)
+        /*if(Math.abs(profit) < stepsize)
         {
           stepsize /= 10;
-        } else if (profit < -stepsize) {
+        } else */
+        if (profit < -stepsize) {
           retailprice_excl_shipping += stepsize;
         } else if (profit > stepsize) { 
           retailprice_excl_shipping -= stepsize;
