@@ -152,7 +152,7 @@
           <p id="platresult"></p> <!-- 3.13 eur -->
           <!--<p id="cheapestOption"></p> -->
           <p id="totalcost"></p> <!-- 20.22 eur -->
-          <!--<p id="noprofit"></p>--> 
+          <p id="noprofit"></p>
           
           <p id="profit"></p> <!-- 1.43 eur -->
         </div>
@@ -171,70 +171,88 @@
     var printify_result = printify_shipping + printify_production_costs + printify_VAT;
 
     document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printify_result.toFixed(2);
-    
-    var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
-    var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
-    var plat_cost = 0;
 
+    var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     if(plat == "")
     {
       errorFeedback('platform');
     }
+    var profit;
+    
+    var firsttime = true;
+    while (profit == null || profit > Math.abs(0.01)) {
+      // Set retailprice_excl_shipping manually and run this code to check if profit goes to 0.
+      var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
+      var plat_cost = 0;
+  
+      
+  
+      lowest_plat_price = null;
+      cheapest_plat = "";
+      if (plat == "Etsy" || plat == "Cheapest") // Etsy
+      {
+        var listing_cost = 0.2; // one time
+        var process_cost = 0.04*retailprice_incl_shipping+0.35;
+        var trans_cost = 0.065*retailprice_incl_shipping;
+        var Etsy_VAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+process_cost*VAT_rate;
+        var plat_cost = process_cost+trans_cost+Etsy_VAT; 
+        cheapCheck("Etsy",plat_cost);
+      } 
+      if (plat == "BigCartel"  || plat == "Cheapest") // Big Cartel    // ONLY payment fees, so calculate them here
+      {    
+        var select_BC = document.getElementById("BigCartel_select");
+        var BC_payment = select_BC.value;
+        BC_VAT = VAT_rate*retailprice_incl_shipping;
+        if(BC_payment == 'Stripe' || plat == "Cheapest" )
+        {
+          plat_cost = 0.015*(retailprice_incl_shipping+BC_VAT) + .25; //1,5% + € 0,25
+          cheapCheck("BigCartel stripe",plat_cost);
+        } 
+        if (BC_payment == 'Paypal' || plat == "Cheapest")
+        {
+          plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
+          cheapCheck("BigCartel paypal",plat_cost);
+        } 
+        if (BC_payment == ""  && plat != "Cheapest")
+        {
+          errorFeedback('platform');
+        }
+      } 
 
-    lowest_plat_price = null;
-    cheapest_plat = "";
-    if (plat == "Etsy" || plat == "Cheapest") // Etsy
-    {
-      var listing_cost = 0.2; // one time
-      var process_cost = 0.04*retailprice_incl_shipping+0.35;
-      var trans_cost = 0.065*retailprice_incl_shipping;
-      var Etsy_VAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+process_cost*VAT_rate;
-      var plat_cost = process_cost+trans_cost+Etsy_VAT; 
-      cheapCheck("Etsy",plat_cost);
-    } 
-    if (plat == "BigCartel"  || plat == "Cheapest") // Big Cartel    // ONLY payment fees, so calculate them here
-    {    
-      var select_BC = document.getElementById("BigCartel_select");
-      var BC_payment = select_BC.value;
-      BC_VAT = VAT_rate*retailprice_incl_shipping;
-      if(BC_payment == 'Stripe' || plat == "Cheapest" )
+      var totalcost = plat != "Cheapest" ? printify_result + plat_cost : printify_result + lowest_plat_price;
+      profit = retailprice_incl_shipping - totalcost; // 1.43 eur
+
+      if(firsttime) 
       {
-        plat_cost = 0.015*(retailprice_incl_shipping+BC_VAT) + .25; //1,5% + € 0,25
-        cheapCheck("BigCartel stripe",plat_cost);
-      } 
-      if (BC_payment == 'Paypal' || plat == "Cheapest")
+        firsttime = false;
+      } else if(profit > Math.abs(0.01)) 
+      { 
+        if (profit < -0.01) {
+          retailprice_excl_shipping += 0.01;
+        } else if (profit > 0.01) { 
+          retailprice_excl_shipping -= 0.01;
+        }
+        return
+      } else if (profit <= Math.abs(0.01)) // noprofit price in range/found
       {
-        plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
-        cheapCheck("BigCartel paypal",plat_cost);
-      } 
-      if (BC_payment == ""  && plat != "Cheapest")
-      {
-        errorFeedback('platform');
+        //var noprofit = (printify_result + 0.35 * (1 + VAT_rate) - 0.01 * printify_shipping) / (1 + 0.065 + 0.01 + 0.04 * (1+VAT_rate)); // Platform dependent?
+        document.getElementById("noprofit").innerHTML = "The break-even platform price is: " + profit.toFixed(2);
+        return;
       }
-    } 
-    
-    
-    var totalcost = plat != "Cheapest" ? printify_result + plat_cost : printify_result + lowest_plat_price;
-  
-    var noprofit = (printify_result + 0.35 * (1 + VAT_rate) - 0.01 * printify_shipping) / (1 + 0.065 + 0.01 + 0.04 * (1+VAT_rate)); // Platform dependent?
-    var profit = retailprice_incl_shipping - totalcost; // 1.43 eur
-    
-    
-    
-    document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
-    //document.getElementById("noprofit").innerHTML = "The noprofit plat price is: " + noprofit.toFixed(2);
-  
-    document.getElementById("profit").innerHTML = "Total profit " + profit.toFixed(2);
-
-    if (plat == "Cheapest") 
-    {
-      document.getElementById("platresult").innerHTML = "Cheapest platform available: " + cheapest_plat + " at a price of: " + lowest_plat_price.toFixed(2);
-    } else 
-    {
-      document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
+      
+      document.getElementById("totalcost").innerHTML = "Total cost " + totalcost.toFixed(2);
+      document.getElementById("profit").innerHTML = "Total profit " + profit.toFixed(2);
+      
+      if (plat == "Cheapest") 
+      {
+        document.getElementById("platresult").innerHTML = "Cheapest platform available: " + cheapest_plat + " at a price of: " + lowest_plat_price.toFixed(2);
+      } else 
+      {
+        document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
+      }
     }
   }
-    
+      
   var cheapest_plat;
   var lowest_plat_price;
   function cheapCheck(plat, price)
