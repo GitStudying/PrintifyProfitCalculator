@@ -222,11 +222,15 @@
       var totalcost = plat != "Cheapest" ? printify_result + plat_cost : printify_result + lowest_plat_price;
       profit = retailprice_incl_shipping - totalcost; // 1.43 eur
 
+      console.log("curprofit");
+
       if(firsttime) 
       {
         firsttime = false;
       } else if(profit > Math.abs(0.01)) 
       { 
+        console.log("profit iteration")
+
         if (profit < -0.01) {
           retailprice_excl_shipping += 0.01;
         } else if (profit > 0.01) { 
@@ -235,7 +239,7 @@
         return
       } else if (profit <= Math.abs(0.01)) // noprofit price in range/found
       {
-        //var noprofit = (printify_result + 0.35 * (1 + VAT_rate) - 0.01 * printify_shipping) / (1 + 0.065 + 0.01 + 0.04 * (1+VAT_rate)); // Platform dependent?
+        console.log("Break-even found")
         document.getElementById("noprofit").innerHTML = "The break-even platform price is: " + profit.toFixed(2);
         return;
       }
