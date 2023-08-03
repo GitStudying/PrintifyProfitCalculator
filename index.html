@@ -181,7 +181,9 @@
     var stepsize = retailprice_incl_shipping;
     var finalaccuracy = 0.01;
     var firsttime = true;
-    while (profit == null || Math.abs(profit) > finalaccuracy) {
+    var iter = 0;
+    while (profit == null && iter < 1000 || Math.abs(profit) > finalaccuracy &&  iter < 1000 ) {
+      iter ++;
       // Set retailprice_excl_shipping manually and run this code to check if profit goes to 0.
       var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
       var plat_cost = 0;
@@ -236,15 +238,16 @@
           document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
         }
         firsttime = false;
-      } else if(Math.abs(profit) > stepsize) 
+      } else if(Math.abs(profit) > finalaccuracy) 
       { 
-        if (profit < -stepsize) {
+        if(Math.abs(profit) < stepsize)
+        {
+          stepsize /= 10;
+        } else if (profit < -stepsize) {
           retailprice_excl_shipping += stepsize;
         } else if (profit > stepsize) { 
           retailprice_excl_shipping -= stepsize;
         }
-        if(profit < stepsize)
-          stepsize /= 10;
       } else if (Math.abs(profit) <= finalaccuracy) // noprofit price in range/found
       {
         document.getElementById("noprofit").innerHTML = "The break-even retail price (exl. shipping) price is: " + retailprice_excl_shipping.toFixed(2);
