@@ -385,9 +385,10 @@
   }
 
   const debouncedCheck = _.debounce(checkInputs, 500);
-  debouncedCheck();
    
   function checkInputs() {
+    debouncedCheck();
+    
     var inputs = document.querySelectorAll('input[type=number]');
     var filledIn = true;
 
