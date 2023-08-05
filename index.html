@@ -99,6 +99,68 @@
         border: none;
         box-shadow: rgba(0,0,0,.1) 0px 4px 12px;
       }
+
+      .breakeven_switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+      
+      .breakeven_switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+      
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+      
+      input:checked + .slider {
+        background-color: #2196F3;
+      }
+      
+      input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+      }
+      
+      input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+      
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 34px;
+      }
+      
+      .slider.round:before {
+        border-radius: 50%;
+      }
+
+
     </style>
   </head>
 <body>
@@ -142,6 +204,11 @@
         <input type="number" id="num3" name="num3"><br><br>-->
         <!--<label for="nSales">Amount of sales (expected) over listing months</label><br>
         <input type="number" id="nSales" name="nSales"><br><br>-->
+        <label class="breakeven_switch">
+          <input type="breakeven_checkbox">
+          <span class="slider"></span>
+        </label>
+
         <button type="button" onclick="checkInputs()">Calculate</button>
         <label id="error" class="error"></label>
       </form>
@@ -182,7 +249,19 @@
     var finalaccuracy = 0.01;
     var firsttime = true;
     var iter = 0;
-    while ((profit == null || Math.abs(profit) > finalaccuracy) &&  iter < 1000) {
+    var maxIter = 1000;
+    
+    var breakeven_toggle = document.getElementById("breakeven_checkbox");
+    breakeven_toggle.addEventListener("change", function() {
+      if (breakeven_toggle.checked) {
+        //maxIter = maxIter
+      } else {
+        maxIter = 1;
+      }
+    });
+
+    
+    while ((profit == null || Math.abs(profit) > finalaccuracy) &&  iter < maxIter) {
       iter ++;
       // Set retailprice_excl_shipping manually and run this code to check if profit goes to 0.
       var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
