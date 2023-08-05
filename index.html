@@ -227,8 +227,6 @@
 
   
   <script>
-  import { debounce } from 'lodash';
-
   function getInput(id) {
     return parseFloat(document.getElementById(id).value);
   }
@@ -386,7 +384,7 @@
     resultsEl.classList.remove("error");
   }
 
-  const debouncedCheck = debounce(checkInputs, 500);
+  const debouncedCheck = _.debounce(checkInputs, 500);
   debouncedCheck();
    
   function checkInputs() {
