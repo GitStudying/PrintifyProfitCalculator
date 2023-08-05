@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
     <style>
       body {
         font-family: Helvetica;
@@ -226,13 +227,21 @@
 
   
   <script>
+  import { debounce } from 'lodash';
+
+  function getInput(id) {
+    return parseFloat(document.getElementById(id).value);
+  }
+    
   function calculate(plat="") {
-    var printify_production_costs = parseFloat(document.getElementById("prod_cost").value);
-    var printify_shipping = parseFloat(document.getElementById("ship_cost").value);
-    var VAT_rate = parseFloat(document.getElementById("VATamount").value)/100;
+    let printify_result, profit, totalcost;
+    
+    var printify_production_costs = getInput("prod_cost");
+    var printify_shipping = getInput("ship_cost");
+    var VAT_rate = getInput("VATamount")/100;
 
     var printify_VAT = (printify_production_costs+printify_shipping)*VAT_rate;
-    var printify_result = printify_shipping + printify_production_costs + printify_VAT;
+    printify_result = printify_shipping + printify_production_costs + printify_VAT;
 
     document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printify_result.toFixed(2);
 
@@ -241,9 +250,8 @@
     {
       errorFeedback('platform');
     }
-    var profit;
     var stepsize = 0.01;
-    var finalaccuracy = 0.01;
+    var finalaccuracy = 0.004; // As long as sub 1 cent, not noticable in any calculation or visual display
     var firsttime = true;
     var iter = 0;
     var maxIter = 1000;
@@ -266,7 +274,8 @@
   
       lowest_plat_price = null;
       cheapest_plat = "";
-      if (plat == "Etsy" || plat == "Cheapest") // Etsy
+      let isCheapest = plat === 'Cheapest'; 
+      if (plat == "Etsy" || isCheapest) // Etsy
       {
         var listing_cost = 0.2; // one time
         var process_cost = 0.04*retailprice_incl_shipping+0.35;
@@ -275,28 +284,28 @@
         var plat_cost = process_cost+trans_cost+Etsy_VAT; 
         cheapCheck("Etsy",plat_cost);
       } 
-      if (plat == "BigCartel"  || plat == "Cheapest") // Big Cartel    // ONLY payment fees, so calculate them here
+      if (plat == "BigCartel"  || isCheapest) // Big Cartel    // ONLY payment fees, so calculate them here
       {    
         var select_BC = document.getElementById("BigCartel_select");
         var BC_payment = select_BC.value;
         BC_VAT = VAT_rate*retailprice_incl_shipping;
-        if(BC_payment == 'Stripe' || plat == "Cheapest" )
+        if(BC_payment == 'Stripe' || isCheapest)
         {
           plat_cost = 0.015*(retailprice_incl_shipping+BC_VAT) + .25; //1,5% + € 0,25
           cheapCheck("BigCartel stripe",plat_cost);
         } 
-        if (BC_payment == 'Paypal' || plat == "Cheapest")
+        if (BC_payment == 'Paypal' || isCheapest)
         {
           plat_cost = 0.044*(retailprice_incl_shipping+BC_VAT); // 4.4% + any currency fees
           cheapCheck("BigCartel paypal",plat_cost);
         } 
-        if (BC_payment == ""  && plat != "Cheapest")
+        if (BC_payment == ""  && !isCheapest)
         {
           errorFeedback('platform');
         }
       } 
 
-      var totalcost = plat != "Cheapest" ? printify_result + plat_cost : printify_result + lowest_plat_price;
+      totalcost = plat != "Cheapest" ? printify_result + plat_cost : printify_result + lowest_plat_price;
       profit = retailprice_incl_shipping - totalcost; // 1.43 eur
 
       if(firsttime) 
@@ -348,10 +357,11 @@
       cheapest_plat = plat;
     }
   }
+
+  const errorEl = document.getElementById('error');
+  const  resultsEl = document.getElementById('results')
   function errorFeedback(type = '')
   {
-    var errorEl = document.getElementById('error');
-    var resultsEl = document.getElementById('results')
     if(type == 'platform')
     {
       errorEl.textContent = 'Not valid platform and details selected';
@@ -375,7 +385,10 @@
     errorEl.textContent = '';
     resultsEl.classList.remove("error");
   }
-  
+
+  const debouncedCheck = debounce(checkInputs, 500);
+  debouncedCheck();
+   
   function checkInputs() {
     var inputs = document.querySelectorAll('input[type=number]');
     var filledIn = true;
