@@ -202,7 +202,7 @@
         <!--<label for="nSales">Amount of sales (expected) over listing months</label><br>
         <input type="number" id="nSales" name="nSales"><br><br>-->
         <label class="breakeven_switch">
-          <input type="checkbox" id="breakeven_checkbox">
+          <input type="checkbox" id="breakeven_checkbox" oninput="checkInputs()">
           <span class="slider round"></span>
         </label>
 
@@ -247,12 +247,13 @@
     var firsttime = true;
     var iter = 0;
     var maxIter = 1000;
-    
+    var noprofitEl = document.getElementById("noprofit");
     var breakeven_toggle = document.getElementById("breakeven_checkbox");
     if (breakeven_toggle.checked) {
-      //maxIter = maxIter
+      //maxIter = 1000
     } else {
       maxIter = 1;
+      noprofitEl.innerHTML = "";
     }
     
     while ((profit == null || Math.abs(profit) > finalaccuracy) &&  iter < maxIter) {
@@ -327,7 +328,7 @@
         }
       } else if (Math.abs(profit) <= finalaccuracy) // noprofit price in range/found
       {
-        document.getElementById("noprofit").innerHTML = "The break-even retail price (exl. shipping) price is: " + retailprice_excl_shipping.toFixed(2);
+        noprofitEl.innerHTML = "The break-even retail price (exl. shipping) price is: " + retailprice_excl_shipping.toFixed(2);
       }
     }
   }
