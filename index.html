@@ -248,7 +248,7 @@
     {
       errorFeedback('platform');
     }
-    var stepsize = 0.01;
+    var stepsize;
     var finalaccuracy = 0.004; // As long as sub 1 cent, not noticable in any calculation or visual display
     var firsttime = true;
     var iter = 0;
@@ -319,6 +319,7 @@
           document.getElementById("platresult").innerHTML = "Selling platform: Total cost " + plat_cost.toFixed(2);
         }
         firsttime = false;
+        stepsize = 0.01;
       } else if(Math.abs(profit) > finalaccuracy) 
       { 
         stepsize = Math.abs(profit) / 10;
