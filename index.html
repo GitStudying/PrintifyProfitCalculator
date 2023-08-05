@@ -18,6 +18,10 @@
         flex-direction: column;
         align-items: center;
       }
+
+      .right > * > *:not(label) {
+          display: block;
+      }
      @media only screen and (min-width: 860px)
      {
        .containerparent {
@@ -51,7 +55,7 @@
         color: #333;
       }
       
-      input[type="number"] {
+      input[type="number"], select {
         padding: .5rem;
         border-radius: .5rem;
         border: none;
@@ -92,22 +96,16 @@
         display:none;
       }
 
-      .select {
-        display: block;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        border: none;
-        box-shadow: rgba(0,0,0,.1) 0px 4px 12px;
-      }
-
       .breakeven_switch {
         position: relative;
         display: inline-block;
         width: 60px;
         height: 34px;
+        box-shadow: rgba(0,0,0,.1) 0px 4px 12px;
+        margin-bottom: 0.5rem;
       }
       
-      .breakeven_switch input {
+      .breakeven_switch input[type="checkbox"] {
         opacity: 0;
         width: 0;
         height: 0;
@@ -137,15 +135,15 @@
         transition: .4s;
       }
       
-      input:checked + .slider {
+      input[type="checkbox"]:checked + .slider {
         background-color: #2196F3;
       }
       
-      input:focus + .slider {
+      input[type="checkbox"]:focus + .slider {
         box-shadow: 0 0 1px #2196F3;
       }
       
-      input:checked + .slider:before {
+      input[type="checkbox"]:checked + .slider:before {
         -webkit-transform: translateX(26px);
         -ms-transform: translateX(26px);
         transform: translateX(26px);
@@ -205,7 +203,7 @@
         <input type="number" id="nSales" name="nSales"><br><br>-->
         <label class="breakeven_switch">
           <input type="checkbox" id="breakeven_checkbox">
-          <span class="slider"></span>
+          <span class="slider round"></span>
         </label>
 
         <button type="button" onclick="checkInputs()">Calculate</button>
@@ -251,14 +249,11 @@
     var maxIter = 1000;
     
     var breakeven_toggle = document.getElementById("breakeven_checkbox");
-    breakeven_toggle.addEventListener("change", function() {
-      if (breakeven_toggle.checked) {
-        //maxIter = maxIter
-      } else {
-        maxIter = 1;
-      }
-    });
-
+    if (breakeven_toggle.checked) {
+      //maxIter = maxIter
+    } else {
+      maxIter = 1;
+    }
     
     while ((profit == null || Math.abs(profit) > finalaccuracy) &&  iter < maxIter) {
       iter ++;
