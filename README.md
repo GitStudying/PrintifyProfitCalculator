@@ -4,5 +4,4 @@ As there are more platforms and might want to compare or calculate the profits f
 
 # Future implementation ideas
 - Possibility to extend to other big selling platforms as it would be a more general tool.
-- Compare multiple or two plaforms, or even calculate the cheapest platform of the implemented ones. As a starting seller this could be handy. If you are more popular or higher selling but gain a lot of traffic from your own sources or affiliate marketing then you could just choose the cheapest platform and sell your items there.
-- Calculate breakeven cost from inputs (depending on the platform cost and logic requires a lot of rewriting of equations and finally solving them)
+- Compare multiple or two plaforms. As a starting seller this could be handy. If you are more popular or higher selling but gain a lot of traffic from your own sources or affiliate marketing then you could just choose the cheapest platform and sell your items there.
