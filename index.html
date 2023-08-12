@@ -179,6 +179,9 @@
           <option value="Cheapest">Cheapest</option>
           <option value="Etsy">Etsy</option>
           <option value="BigCartel">Big Cartel</option>
+          <option value="Shopify">Shopify</option>
+          <option value="WooCommerce">WooCommerce</option>
+          <option value="Squarespace">Squarespace</option>
           <!--<option value="3">Other?</option>-->
         </select>
         <div id="BC_parent" style="display:none;">
@@ -302,6 +305,37 @@
           errorFeedback('platform');
         }
       } 
+      
+      if (plat == "Shopify" || isCheapest) {
+      
+        // Shopify fees
+        var monthly_fee = 29; // Basic Shopify plan
+        var trans_fee = 0.02 + 0.032 * retailprice_incl_shipping; // 2% + 3.2% of transaction
+
+        var shopify_cost = monthly_fee + trans_fee;
+      
+        cheapCheck("Shopify", shopify_cost);
+      
+      }
+      if (plat == "WooCommerce" || isCheapest) {
+      
+        // WooCommerce fees
+        var trans_fee = 0.035 * retailprice_incl_shipping + 0.50;
+        var woo_cost = trans_fee;
+      
+        cheapCheck("WooCommerce", woo_cost);  
+      }
+      
+      if (plat == "Squarespace" || isCheapest) {
+      
+        // Squarespace fees
+        var monthly_fee = 12; // Basic Commerce plan
+        var trans_fee = 0.03 * retailprice_incl_shipping;
+        var square_cost = monthly_fee + trans_fee;
+        
+        cheapCheck("Squarespace", square_cost);
+      
+      }
 
       totalcost = plat != "Cheapest" ? printify_result + plat_cost : printify_result + lowest_plat_price;
       profit = retailprice_incl_shipping - totalcost; // 1.43 eur
