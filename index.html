@@ -184,6 +184,11 @@
           <option value="Squarespace">Squarespace</option>
           <!--<option value="3">Other?</option>-->
         </select>
+        <label for="plat_select_from">Print on demand or directly</label><br>
+        <select class="select" id="plat_select_from" name="plat_select_from" onchange="throttledCheck()">
+          <option value="Printify">Printify</option>
+          <option value="Direct">Directly from selling platform</option>
+        </select>
         <div id="BC_parent" style="display:none;">
           <label for="BigCartel_select">BigCartel payment type</label><br>
           <select class="select" id="BigCartel_select" name="BigCartel_select" onchange="throttledCheck()">
@@ -192,11 +197,11 @@
             <option value="Paypal">Paypal</option>
           </select>
         </div>
-        <label for="prod_cost">Printify production cost</label><br> <!-- 9.01 eur -->
+        <label for="prod_cost">Production cost (Provider)</label><br> <!-- 9.01 eur -->
         <input type="number" id="prod_cost" name="prod_cost" oninput="throttledCheck()" min="0"><br>
-        <label for="ship_cost">Printify shipping cost</label><br> <!-- 5.10 eur -->
+        <label for="ship_cost">Shipping cost (Provider)</label><br> <!-- 5.10 eur -->
         <input type="number" id="ship_cost" name="ship_cost" oninput="throttledCheck()" min="0"><br>
-        <label for="retailprice">Printify retail price (EXCLUDING SHIPPING)</label><br> <!--  -->
+        <label for="retailprice">Retail price (Provider: EXCLUDING SHIPPING)</label><br> <!--  -->
         <input type="number" id="retailprice" name="retailprice" oninput="throttledCheck()" min="0"><br>
         <label for="VATamount">VAT percentage (0-100%)</label><br> <!--  -->
         <input type="number" id="VATamount" name="VATamount" oninput="throttledCheck()" min="0" onkeydown="if (event.keyCode === 13) { throttledCheck(); return false; }"><br>
@@ -205,6 +210,7 @@
         <input type="number" id="num3" name="num3"><br><br>-->
         <!--<label for="nSales">Amount of sales (expected) over listing months</label><br>
         <input type="number" id="nSales" name="nSales"><br><br>-->
+        <label for="prod_cost">Calculate break-even point</label><br> <!-- 9.01 eur -->
         <label class="breakeven_switch">
           <input type="checkbox" id="breakeven_checkbox" oninput="throttledCheck()">
           <span class="slider round"></span>
@@ -234,17 +240,23 @@
     return parseFloat(document.getElementById(id).value);
   }
     
-  function calculate(plat="") {
-    let printify_result, profit, totalcost;
+  function calculate(plat="", plat_from="") {
+    let profit, totalcost, prodplusship;
+
+    var VAT_rate = getInput("VATamount") / 100;
+
+    var provider_production_costs = getInput("prod_cost");
+    var provider_shipping = getInput("ship_cost");
     
-    var printify_production_costs = getInput("prod_cost");
-    var printify_shipping = getInput("ship_cost");
-    var VAT_rate = getInput("VATamount")/100;
-
-    var printify_VAT = (printify_production_costs+printify_shipping)*VAT_rate;
-    printify_result = printify_shipping + printify_production_costs + printify_VAT;
-
-    document.getElementById("printifyresult").innerHTML = "Printify: Total  costs " + printify_result.toFixed(2);
+    if (plat_from == "Printify"){
+    
+      var printify_VAT = (provider_production_costs + provider_shipping)*VAT_rate;
+      printify_result = provider_shipping + provider_production_costs + printify_VAT;
+      prodplusship =  printify_result;
+    } else if (plat_from == "Direct"){
+      prodplusship = provider_shipping + provider_production_costs;
+    }
+    document.getElementById("printifyresult").innerHTML = "Total  costs (Printify) " + prodplusship.toFixed(2);
 
     var retailprice_excl_shipping = parseFloat(document.getElementById("retailprice").value);
     if(plat == "")
@@ -264,14 +276,11 @@
       maxIter = 1;
       noprofitEl.innerHTML = "";
     }
-    
     while ((profit == null || Math.abs(profit) > finalaccuracy) &&  iter < maxIter) {
       iter ++;
       // Set retailprice_excl_shipping manually and run this code to check if profit goes to 0.
-      var retailprice_incl_shipping = retailprice_excl_shipping+printify_shipping;
-      var plat_cost = 0;
-  
-      
+      var retailprice_incl_shipping = retailprice_excl_shipping+provider_shipping;
+      var plat_cost = 0;    
   
       lowest_plat_price = null;
       cheapest_plat = "";
@@ -279,10 +288,12 @@
       if (plat == "Etsy" || isCheapest) // Etsy
       {
         var listing_cost = 0.2; // one time
-        var process_cost = 0.04*retailprice_incl_shipping+0.35;
-        var trans_cost = 0.065*retailprice_incl_shipping;
-        var Etsy_VAT = 0.01*retailprice_incl_shipping+0.01*printify_shipping+process_cost*VAT_rate;
-        var plat_cost = process_cost+trans_cost+Etsy_VAT; 
+        var trans_cost = 0.065*retailprice_excl_shipping;
+        var process_cost = 0.04*retailprice_excl_shipping+0.30;
+        var Etsy_VAT = trans_cost*VAT_rate + process_cost * VAT_rate;
+        // 0.01*retailprice_excl_shipping + 0.01 * provider_shipping + process_cost * VAT_rate;
+        var plat_cost = process_cost + trans_cost + Etsy_VAT;
+        console.log("Etsy cost: "+ retailprice_excl_shipping+ " " + trans_cost+" " + process_cost +" "+ Etsy_VAT);
         cheapCheck("Etsy",plat_cost);
       } 
       if (plat == "BigCartel"  || isCheapest) // Big Cartel    // ONLY payment fees, so calculate them here
@@ -337,8 +348,8 @@
       
       }
 
-      totalcost = plat != "Cheapest" ? printify_result + plat_cost : printify_result + lowest_plat_price;
-      profit = retailprice_incl_shipping - totalcost; // 1.43 eur
+      totalcost = plat != "Cheapest" ? prodplusship + plat_cost : prodplusship + lowest_plat_price;
+      profit = retailprice_excl_shipping - totalcost; // 1.43 eur
 
       if(firsttime) 
       {
@@ -357,7 +368,7 @@
       } else if(Math.abs(profit) > finalaccuracy) 
       { 
         stepsize = Math.abs(profit) / 10;
-        console.log("stepsize,profit: "+stepsize+","+profit)
+        // console.log("stepsize,profit: "+stepsize+","+profit)
 
         /*if(stepsize > Math.abs(profit))
         {
@@ -429,6 +440,11 @@
     var select = document.getElementById("plat_select");
     var plat = select.value;
 
+    var select_from = document.getElementById("plat_select_from");
+    var plat_from = select_from.value;
+
+    
+
     var BC_parent = document.getElementById("BC_parent");
     BC_parent.style.display = "none";
 
@@ -457,7 +473,7 @@
     });
 
     if (filledIn) {
-      calculate(plat);
+      calculate(plat,plat_from);
     } else 
     {
       errorFeedback('input');
