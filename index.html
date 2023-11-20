@@ -236,6 +236,24 @@
 
   
   <script>
+  // Get the current URL
+  var currentUrl = window.location.href;
+
+  // Create a URLSearchParams object from the URL
+  var urlParams = new URLSearchParams(currentUrl);
+
+  // Get the values of 'plat' and 'plat_from' parameters
+  var platUrl = urlParams.get('plat');
+  var platFromUrl = urlParams.get('plat_from');
+  var select = document.getElementById("plat_select");
+  var select_from = document.getElementById("plat_select_from");
+
+  select.value = platUrl;
+  select_from.value = platFromUrl;
+
+  // select.dispatchEvent(new Event('change'));
+
+
   function getInput(id) {
     return parseFloat(document.getElementById(id).value);
   }
@@ -437,10 +455,8 @@
     var inputs = document.querySelectorAll('input[type=number]');
     var filledIn = true;
 
-    var select = document.getElementById("plat_select");
     var plat = select.value;
 
-    var select_from = document.getElementById("plat_select_from");
     var plat_from = select_from.value;
 
     
